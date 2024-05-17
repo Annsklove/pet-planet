@@ -1,5 +1,5 @@
-@use "../variables"as *;
-@use "../media"as *;
+@use "../variables" as *;
+@use "../media" as *;
 
 .hero {
   padding-top: 200px;
@@ -9,12 +9,16 @@
   background-color: $purple;
   background-image: url("/img/bg-dog.png"), url("/img/pattern.svg");
   background-size: contain, auto;
-  background-position: right bottom, center;
+  background-position:
+    right bottom,
+    center;
   background-repeat: no-repeat, repeat;
 
   @include bigscreen {
     background-image: url("/img/bg-dog-bigscreen.png"), url("/img/pattern.svg");
-    background-position: left 48vw bottom 0, center;
+    background-position:
+      left 48vw bottom 0,
+      center;
     background-size: 1850px, auto;
   }
 
@@ -25,13 +29,17 @@
 
   @include tablet {
     padding: 148px 0 461px;
-    background-size: 655px 564px, cover;
+    background-size:
+      655px 564px,
+      cover;
     background-image: url("/img/bg-dog-tablet.png"), url("/img/pattern.svg");
   }
 
   @include mobile {
     padding: 100px 0 284px;
-    background-size: 294px 261px, cover;
+    background-size:
+      294px 261px,
+      cover;
     background-image: url("/img/bg-dog-mobile.png"), url("/img/pattern.svg");
   }
 
@@ -87,52 +95,7 @@
   }
 
   &__store-link {
-    width: max-content;
-    display: flex;
-    gap: 4px;
-    align-items: center;
-    border-radius: 40px;
-    padding: 16px 24px;
     background-color: $green;
-    font-weight: 700;
-    text-align: center;
     color: $light;
-    outline: 1px solid transparent;
-
-    transition-property: background-color, transform;
-    transition-duration: 0.2s, 0.1s;
-    transition-timing-function: ease-in-out;
-
-    &:hover {
-      background: #00772f;
-    }
-
-    &:focus-visible {
-      outline: 1px solid $carrot;
-    }
-
-    &:active {
-      transform: scale(0.94);
-    }
-
-    &:after {
-      content: '';
-      display: block;
-      width: 16px;
-      height: 16px;
-      background: url('/img/arrow-to-store.svg') no-repeat center/contain;
-    }
-
-    @include laptop {
-      padding: 16px 36px;
-    }
-
-    @include laptop {
-      padding: 16px 36px;
-    }
-
-    @include mobile {
-      padding: 11px 24px;
-    }
   }
 }
