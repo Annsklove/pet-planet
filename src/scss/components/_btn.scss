@@ -1,10 +1,10 @@
-@use "../variables"as *;
-@use "../media"as *;
+@use "../variables" as *;
+@use "../media" as *;
 
 .btn {
     width: max-content;
 
-    background-color: $green;
+    background-color: $carrot;
     color: $light;
 
     border-radius: 40px;
@@ -32,15 +32,28 @@
     }
 
     &:hover {
-        background: #00772f;
+        background-color: darken($carrot, 4);
     }
 
-    &:focus-visible {
+    &:focus-visible  {
         outline: 1px solid $carrot;
     }
 
     &:active {
         transform: scale(0.94);
+    }
+
+    &--green {
+        background-color: $green;
+        &:hover {
+            background-color: #00772f;
+        }
+    }
+    &--purple {
+        background-color: $purple;
+        &:hover {
+            background-color: #981fd1;
+        }
     }
 
     @include laptop {

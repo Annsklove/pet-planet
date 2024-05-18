@@ -68,14 +68,5 @@
     right: 0;
     top: 0;
     bottom: 0;
-    background-color: $purple;
-    color: $light;
-  }
-
-  &__button-text {
-    @include mobile {
-      position: fixed;
-      transform: scale(0);
-    }
   }
 }
