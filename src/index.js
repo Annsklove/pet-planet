@@ -89,7 +89,7 @@ const fetchProductByCategory = async (category) => {    // try...catch --> дл�
 };
 
 //вызов функции: отправляет запрос на сервер для получения продуктов категории "Домики" и рендерит их на странице
-fetchProductByCategory('Домики');
+// fetchProductByCategory('Домики');
 // fetchProductByCategory('Лежанки');
-// fetchProductByCategory('Игрушки');
+fetchProductByCategory('Игрушки');
 // fetchProductByCategory('Корма');
