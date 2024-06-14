@@ -1,11 +1,21 @@
 import { defineConfig } from "vite";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 
+// добавим натсройку:
+import { resolve } from 'path';
+
 export default defineConfig({
   root: "./src",
   publicDir: "../public",
   build: {
     outDir: "../dist",
+    //наша настройка:
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, './src/index.html'),
+        store: resolve(__dirname, './src/store.html'),
+      },
+    }
   },
   plugins: [
     ViteImageOptimizer({
