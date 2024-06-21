@@ -27,9 +27,11 @@ const createProductCard = ({ photoUrl, name, price }) => {
     productCard.innerHTML = `
     <article class="store__product product">
         <img class="product__img" src="${API_URL}${photoUrl}" alt="${name}" width="388" height="261">
+        <div class="product__content">
         <h3 class="product__title">${name}</h3>
         <p class="product__price">${price}&nbsp;₽</p>
         <button class="product__btn-add-cart btn btn--purple">Заказать</button>
+        </div>
     </article>
     `;
 
@@ -166,3 +168,5 @@ productList.addEventListener('click', ({ target }) => {
         addToCart(productName);
     }
 });
+
+// tests
