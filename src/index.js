@@ -20,7 +20,7 @@ const modalCloseButton = document.querySelector('.modal-overlay__close-button');
 
 // $ функция для создания карточки товара.
 //На вход получает данные переданные в product
-const createProductCard = ({ photoUrl, name, price }) => {
+const createProductCard = ({ id, photoUrl, name, price }) => {
     // console.log('product: ', product);
     const productCard = document.createElement('li');
     productCard.classList.add('store__item');
@@ -30,8 +30,7 @@ const createProductCard = ({ photoUrl, name, price }) => {
         <div class="product__content">
         <h3 class="product__title">${name}</h3>
         <p class="product__price">${price}&nbsp;₽</p>
-        <button class="product__btn-add-cart btn btn--purple">Заказать</button>
-        </div>
+        <button class="product__btn-add-cart btn btn--purple"data-id="${id}">Заказать</button>
     </article>
     `;
 
@@ -163,9 +162,8 @@ productList.addEventListener('click', ({ target }) => {
     // Если мы кликаем по кнопке product__btn-add-cart ИЛИ по эллементы в этой кнопке (за это отвечает closest), то ...
     if (target.closest('.product__btn-add-cart')) {
         // ... то добавляем товар в карзину
-        const productCard = target.closest('.store__product');
-        const productName = productCard.querySelector('.product__title').textContent;
-        addToCart(productName);
+        const productId = parseInt(target.dataset.id, 10);
+        addToCart(productId);
     }
 });
 
