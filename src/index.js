@@ -11,6 +11,9 @@ const modalOverlay = document.querySelector('.modal-overlay');
 const cartItemsList = document.querySelector('.modal__cart-items');
 const modalCloseButton = document.querySelector('.modal-overlay__close-button');
 
+const cartTotalPticeElement = document.querySelector('.modal__cart-price');
+const cartForm = document.querySelector('.modal__cart-form');
+
 // #
 // # ф-ия дял Вызова API с удаленного сервера и работа с данными
 // #
@@ -117,6 +120,11 @@ buttons.forEach((button) => {
 
 });
 
+const calculateTotalPrice = (cartItems, products) => cartItems.reduce((acc, item) => {
+    const product = products.find(prod => prod.id === item.id);
+    return acc + product.price * item.count;
+}, 0);
+
 // #
 // # ф-ия отображения добавленных товаров в карзине
 // #
@@ -148,6 +156,9 @@ const renderCartItems = async () => {
 
         cartItemsList.append(listItem);
     });
+
+    const totalPrice = calculateTotalPrice(cartItems, products);
+    cartTotalPticeElement.innerHTML = `${totalPrice}&nbsp;₽`;
 };
 
 
@@ -163,6 +174,7 @@ cartButton.addEventListener('click', async () => {
 
     // Будем выводить сообщение, если в карзину не будет добавлено ни одной позиции
     if (!ids.length) { //проверяем, если длина элемента = 0, то:
+        cartItems.textContent = '';
         const listItem = document.createElement('li'); //создаем эллемент
         listItem.textContent = 'Корзина пуста';
         cartItemsList.append(listItem); //вставляем этот элемент
@@ -172,7 +184,7 @@ cartButton.addEventListener('click', async () => {
     const products = await fetchCartItems(ids);
     localStorage.setItem('cartProductDetails', JSON.stringify(products));
     // далее будем отображать добавленные товары:
-    renderCartItems()
+    renderCartItems();
 });
 modalOverlay.addEventListener('click', ({ target }) => {
     if (target === modalOverlay ||
@@ -222,3 +234,6 @@ productList.addEventListener('click', ({ target }) => {
         addToCart(productId);
     }
 });
+
+
+//36.40
