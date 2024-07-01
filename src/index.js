@@ -77,6 +77,21 @@ const fetchProductByCategory = async (category) => {    // try...catch --> дл�
 };
 
 
+const fetchCartItems = async (ids) => {
+    try {
+        const response = await fetch(`${API_URL}/api/products/list/${ids.join(",")}`,
+        );
+
+        if (!response.ok) {
+            throw new Error(response.status);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error(`Ошибка запроса товаров для корзины: ${error}`);
+        return [];
+    }
+};
 
 // #
 // # ф-ия отображение активной категории
@@ -105,26 +120,59 @@ buttons.forEach((button) => {
 // #
 // # ф-ия отображения добавленных товаров в карзине
 // #
-const renderCartItems = () => {
-    //очищаем этот контейнер
-    cartItemsList.textContent = '';
+const renderCartItems = async () => {
+    cartItemsList.textContent = '';  //очищаем этот контейнер
     const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    const products = JSON.parse(
+        localStorage.getItem('cartProductDetails') || '[]',
+    );
 
-    cartItems.forEach((item) => {
+    products.forEach(({ id, photoUrl, name, price }) => {
+        const cartItem = cartItems.find((item) => item.id === id);
+        if (!cartItem) {
+            return;
+        }
+
         const listItem = document.createElement('li');
-        listItem.textContent = item;
+        listItem.classList.add('modal__cart-item');
+        listItem.innerHTML = `
+            <img class="modal__cart-item-image" src="${API_URL}${photoUrl}" alt="${name}">
+            <h3 class="modal__cart-item-title">${name}</h3>
+            <div class="modal__cart-otem-count">
+                <button class="modal__btn modal__minus" data-id=${id}>-</button>
+                <span class="modal__count">${cartItem.count}</span>
+                <button class="modal__btn modal__plus" data-id=${id}>+</button>
+            </div>
+            <p class="modal__cart-item-price">${price * cartItem.count}&nbsp;₽</p>
+        `;
+
         cartItemsList.append(listItem);
     });
 };
 
 
 // #
+// # ф-ия отображения добавленных товаров в карзине
 // # ф-ия показа/скрытия модального окна (карзина)
 // #
-cartButton.addEventListener('click', () => {
+cartButton.addEventListener('click', async () => {
     modalOverlay.style.display = 'flex';
-    // далее будем отображать добавленные товары
-    renderCartItems();
+
+    const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    const ids = cartItems.map((item) => item.id);
+
+    // Будем выводить сообщение, если в карзину не будет добавлено ни одной позиции
+    if (!ids.length) { //проверяем, если длина элемента = 0, то:
+        const listItem = document.createElement('li'); //создаем эллемент
+        listItem.textContent = 'Корзина пуста';
+        cartItemsList.append(listItem); //вставляем этот элемент
+        return;
+    }
+
+    const products = await fetchCartItems(ids);
+    localStorage.setItem('cartProductDetails', JSON.stringify(products));
+    // далее будем отображать добавленные товары:
+    renderCartItems()
 });
 modalOverlay.addEventListener('click', ({ target }) => {
     if (target === modalOverlay ||
@@ -149,10 +197,18 @@ const updateCartCount = () => {
 
 updateCartCount();
 
-const addToCart = (productName) => {
+const addToCart = (productId) => {
     // будем получить данные из локального хранилища или пустой массив (если этих данных нет)
     const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    cartItems.push(productName);
+
+    const existingItem = cartItems.find((item) => item.id === productId);
+
+    if (existingItem) {
+        existingItem.count += 1;
+    } else {
+        cartItems.push({ id: productId, count: 1 });
+    }
+
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
     updateCartCount();
 };
@@ -162,9 +218,7 @@ productList.addEventListener('click', ({ target }) => {
     // Если мы кликаем по кнопке product__btn-add-cart ИЛИ по эллементы в этой кнопке (за это отвечает closest), то ...
     if (target.closest('.product__btn-add-cart')) {
         // ... то добавляем товар в карзину
-        const productId = parseInt(target.dataset.id, 10);
+        const productId = target.dataset.id;
         addToCart(productId);
     }
 });
-
-// tests
