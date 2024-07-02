@@ -1,6 +1,7 @@
 # pet-planet
 
 *   [макет Figma](https://www.figma.com/design/M68A9gzpL9WWnCJubPemGe/Petshop-(Intensive)?node-id=0-1&t=JDxNU17PF8IfNbQI-0)
+*   [тестовый сервер](https://glitch.com/edit/#!/freezing-agreeable-store?path=README.md%3A1%3A0)
 
 Это небольшой проект для учебных целей.
 
