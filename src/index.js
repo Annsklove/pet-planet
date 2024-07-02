@@ -236,4 +236,47 @@ productList.addEventListener('click', ({ target }) => {
 });
 
 
-//36.40
+// #
+// # ф-ия обновление счетчика +/- у элемента в карзине
+// #
+const updateCartItem = (productId, change) => {
+    const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    const itemIndex = cartItems.findIndex(item => item.id === productId);
+
+    if (itemIndex !== -1) {
+        cartItems[itemIndex].count += change;
+
+        if (cartItems[itemIndex].xount <= 0) {
+            cartItems.splice(itemIndex, 1);
+        }
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+
+        updateCartCount();
+        renderCartItems();
+    }
+};
+cartItemsList.addEventListener('click', ({ target }) => {
+    if (target.classList.contains('modal__plus')) {
+        const productId = target.dataset.id;
+        updateCartItem(productId, 1);
+    }
+
+    if (target.classList.contains('modal__minus')) {
+        const productId = target.dataset.id;
+        updateCartItem(productId, -1);
+    }
+});
+
+
+// #
+// # теперь нужно отправить данные ИЗ карзина --> на сервер
+// #
+const submitOrder = (e) => {
+    e.preventDefault(); //отключаем стандартное поведение формы после сабмина (отключаем перезагрузку страницы):
+
+    const storId = cartForm.store.value;
+    const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+
+    
+}
+cartForm.addEventListener('submit', submitOrder);
