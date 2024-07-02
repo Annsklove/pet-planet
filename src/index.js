@@ -1,4 +1,5 @@
 // $ Созадли удаленный сервер на глитче, залив туда нашу готовую АПИ
+// сервер: https://glitch.com/edit/#!/freezing-agreeable-store?path=README.md%3A1%3A0
 const API_URL = 'https://freezing-agreeable-store.glitch.me'; // /api/products/category
 
 const buttons = document.querySelectorAll('.store__category-button');
@@ -13,6 +14,22 @@ const modalCloseButton = document.querySelector('.modal-overlay__close-button');
 
 const cartTotalPticeElement = document.querySelector('.modal__cart-price');
 const cartForm = document.querySelector('.modal__cart-form');
+
+const orderMessageElement = document.createElement('div');
+orderMessageElement.classList.add('order-message');
+
+const orderMessageText = document.createElement('p');
+orderMessageText.classList.add('order-message__text');
+
+const orderMessageCloseButton = document.createElement('button');
+orderMessageCloseButton.classList.add('order-message__close-button');
+orderMessageCloseButton.textContent = 'Закрыть';
+
+orderMessageElement.append(orderMessageText, orderMessageCloseButton);
+
+orderMessageCloseButton.addEventListener('click', () => {
+    orderMessageElement.remove();
+});
 
 // #
 // # ф-ия дял Вызова API с удаленного сервера и работа с данными
@@ -267,16 +284,63 @@ cartItemsList.addEventListener('click', ({ target }) => {
     }
 });
 
+// #
+// # функция для создания завтрашней даты
+// #
+const tomorrowDate = () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const options = { day: 'numeric', month: 'long', yeat: 'numeric'};
+    return tomorrow.toLocaleDateString('ru-RU', options);
+};
+
 
 // #
 // # теперь нужно отправить данные ИЗ карзина --> на сервер
 // #
-const submitOrder = (e) => {
+const submitOrder = async (e) => {
     e.preventDefault(); //отключаем стандартное поведение формы после сабмина (отключаем перезагрузку страницы):
 
-    const storId = cartForm.store.value;
+    const storeId = cartForm.store.value;
     const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    console.log('cartItems: ', cartItems);
 
-    
-}
+    const products = cartItems.map(({ id, count }) => ({
+        id,
+        quantity: count,
+    }));
+    console.log('products: ', products);
+
+    try {
+        const response = await fetch(`${API_URL}/api/orders`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ storeId, products }),
+        });
+
+        if (!response.ok) {
+            throw new Error(response.status);
+        }
+
+        localStorage.removeItem('cartItems');
+        localStorage.removeItem('cartProductDetails');
+
+        const { orderId } = await response.json();
+        const orderDate = tomorrowDate();
+        orderMessageText.textContent = `Ваш заказ оформлен, номер заказа: ${orderId}. Вы можете его забрать завтра (${orderDate}) после 12:00`
+        document.body.append(orderMessageElement);
+
+        modalOverlay.style.display = "none";
+        updateCartCount();
+
+    } catch (error) {
+        console.error(`Ошибка оформления заказа: ${error}`);
+    }
+};
+
 cartForm.addEventListener('submit', submitOrder);
+
