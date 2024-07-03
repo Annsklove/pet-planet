@@ -331,7 +331,7 @@ const submitOrder = async (e) => {
 
         const { orderId } = await response.json();
         const orderDate = tomorrowDate();
-        orderMessageText.textContent = `Ваш заказ оформлен, номер заказа: ${orderId}. Вы можете его забрать завтра (${orderDate}) после 12:00`
+        orderMessageText.innerHTML = `Ваш заказ оформлен!<br> Номер заказа: ${orderId}.<br> Вы можете его забрать завтра (${orderDate}) после 12:00`
         document.body.append(orderMessageElement);
 
         modalOverlay.style.display = "none";
