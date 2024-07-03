@@ -1,7 +1,7 @@
 $bigscreen: 1600px;
 $laptop: 1140px;
 $tablet: 940px;
-$mobile: 520px;
+$mobile: 640px;
 
 @mixin bigscreen {
   @media (min-width: $bigscreen) {

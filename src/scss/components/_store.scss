@@ -10,12 +10,25 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 40px;
+
+        @include mobile {
+            // flex-direction: column;
+            flex-wrap: wrap;
+            justify-content: end;
+            gap: 30px;
+        }
     }
 
     &__categories {
         display: flex;
         gap: 28px;
         // position: relative;
+        overflow-x: auto;
+
+        @include mobile {
+            flex-grow: 1;
+            gap: 16px;
+        }
     }
 
     &__category-item {
@@ -53,11 +66,6 @@
         position: relative;
         width: 28px;
         height: 28px;
-
-        @include bigscreen {
-            width: 32px;
-            height: 32px;
-        }
     }
 
     &__cart-icn {
@@ -76,6 +84,7 @@
         line-height: 100%;
         text-align: center;
         color: $light;
+        vertical-align: middle;
 
         @include mobile {
             bottom: -2px;
@@ -110,5 +119,8 @@
 
     &__item {
         display: flex;
+        @include mobile {
+            justify-content: center;
+        }
     }
 }
