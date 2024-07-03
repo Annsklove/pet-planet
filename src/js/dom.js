@@ -1,3 +1,41 @@
+import { API_URL } from './api';
+
+// #
+// # функция для создания завтрашней даты
+// #
+const tomorrowDate = () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const options = { day: 'numeric', month: 'long', yeat: 'numeric' };
+    return tomorrow.toLocaleDateString('ru-RU', options);
+};
+// #
+// # ф-ия для вывода сообщения после заказа
+// #
+const createOrderMessage = (id) => {
+    const orderMessageElement = document.createElement('div');
+    orderMessageElement.classList.add('order-message');
+
+    const orderMessageText = document.createElement('p');
+    orderMessageText.classList.add('order-message__text');
+    const orderDate = tomorrowDate();
+    orderMessageText.innerHTML = `Ваш заказ оформлен!<br> Номер заказа: ${orderId}.<br> Вы можете его забрать завтра (${orderDate}) после 12:00`
+
+    const orderMessageCloseButton = document.createElement('button');
+    orderMessageCloseButton.classList.add('order-message__close-button');
+    orderMessageCloseButton.textContent = 'Закрыть';
+
+    orderMessageElement.append(orderMessageText, orderMessageCloseButton);
+
+    orderMessageCloseButton.addEventListener('click', () => {
+        orderMessageElement.remove();
+    });
+
+    return orderMessageElement;
+}
+
 // #
 // # ф-ия дял Вызова API с удаленного сервера и работа с данными
 // #
@@ -25,7 +63,7 @@ const createProductCard = ({ id, photoUrl, name, price }) => {
 };
 
 // $ функция для отображение (рендеринга) товаров на странице
-const renderProducts = (products) => {
+export const renderProducts = (products, productList) => {
     productList.textContent = ''; //очищаем старое содержимое, чтобы перед добавлением очистить список товаров
     products.forEach((product) => { //проходим по массиву и для каждого продукта создаем карточку
         // console.log(product);

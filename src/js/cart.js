@@ -71,17 +71,7 @@ cartItemsList.addEventListener('click', ({ target }) => {
     }
 });
 
-// #
-// # функция для создания завтрашней даты
-// #
-const tomorrowDate = () => {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
 
-    const options = { day: 'numeric', month: 'long', yeat: 'numeric' };
-    return tomorrow.toLocaleDateString('ru-RU', options);
-};
 
 // #
 // # ф-ия отображения добавленных товаров в карзине
@@ -133,9 +123,7 @@ cartForm.addEventListener('submit', async (e) => {
     localStorage.removeItem('cartItems');
     localStorage.removeItem('cartProductDetails');
 
-    const orderDate = tomorrowDate();
-    orderMessageText.innerHTML = `Ваш заказ оформлен!<br> Номер заказа: ${orderId}.<br> Вы можете его забрать завтра (${orderDate}) после 12:00`
-    document.body.append(orderMessageElement);
+    document.body.append(createOrderMessage(orderId));
 
     modalOverlay.style.display = "none";
     updateCartCount();

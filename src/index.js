@@ -1,60 +1,50 @@
+import { fetchProductsByCategory } from "./js/api";
+import { renderProducts } from './js/dom';
 
-const buttons = document.querySelectorAll('.store__category-button');
-// контейнер, куда будем добавлять наши товары
-const productList = document.querySelector('.store__list');
+const init = () => {
+    const buttons = document.querySelectorAll('.store__category-button');
+    const productList = document.querySelector('.store__list'); // контейнер, куда будем добавлять наши товары
 
+    // #
+    // # ф-ия отображение активной категории
+    // #
+    const changeCategory = async ({ target }) => {
+        const category = target.textContent;
 
+        buttons.forEach((button) => {
+            button.classList.remove('store__category-button--active');
+        });
 
+        target.classList.add('store__category-button--active');
 
+        const products = await fetchProductsByCategory(category);
+        renderProducts(products, productList);
+    };
 
-const orderMessageElement = document.createElement('div');
-orderMessageElement.classList.add('order-message');
-
-const orderMessageText = document.createElement('p');
-orderMessageText.classList.add('order-message__text');
-
-const orderMessageCloseButton = document.createElement('button');
-orderMessageCloseButton.classList.add('order-message__close-button');
-orderMessageCloseButton.textContent = 'Закрыть';
-
-orderMessageElement.append(orderMessageText, orderMessageCloseButton);
-
-orderMessageCloseButton.addEventListener('click', () => {
-    orderMessageElement.remove();
-});
-
-// #
-// # ф-ия отображение активной категории
-// #
-const changeCategory = ({ target }) => {
-    const category = target.textContent;
 
     buttons.forEach((button) => {
-        button.classList.remove('store__category-button--active');
+        button.addEventListener('click', changeCategory);
+
+        if (button.classList.contains('store__category-button--active')) {
+            //вызов функции: отправляет запрос на сервер для получения продуктов категории "Домики" и рендерит их на странице
+            // fetchProductsByCategory(button.textContent);
+            changeCategory({ target: button });
+        }
     });
 
-    target.classList.add('store__category-button--active');
-    fetchProductByCategory(category);
+
+    productList.addEventListener('click', ({ target }) => {
+        // console.log('target: ', target);
+        // Если мы кликаем по кнопке product__btn-add-cart ИЛИ по эллементы в этой кнопке (за это отвечает closest), то ...
+        if (target.closest('.product__btn-add-cart')) {
+            // ... то добавляем товар в карзину
+            const productId = target.dataset.id;
+            addToCart(productId);
+        }
+    });
 };
 
-buttons.forEach((button) => {
-    button.addEventListener('click', changeCategory);
+init();
 
-    if (button.classList.contains('store__category-button--active')) {
-        //вызов функции: отправляет запрос на сервер для получения продуктов категории "Домики" и рендерит их на странице
-        fetchProductByCategory(button.textContent);
-    }
-
-});
-
-
-productList.addEventListener('click', ({ target }) => {
-    // console.log('target: ', target);
-    // Если мы кликаем по кнопке product__btn-add-cart ИЛИ по эллементы в этой кнопке (за это отвечает closest), то ...
-    if (target.closest('.product__btn-add-cart')) {
-        // ... то добавляем товар в карзину
-        const productId = target.dataset.id;
-        addToCart(productId);
-    }
-});
-
+//1.50
+//https://www.youtube.com/watch?v=4uzNpu7e9uc&t=1812s
