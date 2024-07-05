@@ -14,14 +14,14 @@ const tomorrowDate = () => {
 // #
 // # ф-ия для вывода сообщения после заказа
 // #
-const createOrderMessage = (id) => {
+export const createOrderMessage = (id) => {
     const orderMessageElement = document.createElement('div');
     orderMessageElement.classList.add('order-message');
 
     const orderMessageText = document.createElement('p');
     orderMessageText.classList.add('order-message__text');
     const orderDate = tomorrowDate();
-    orderMessageText.innerHTML = `Ваш заказ оформлен!<br> Номер заказа: ${orderId}.<br> Вы можете его забрать завтра (${orderDate}) после 12:00`
+    orderMessageText.innerHTML = `Ваш заказ оформлен!<br> Номер заказа: ${id}.<br> Вы можете его забрать завтра (${orderDate}) после 12:00`
 
     const orderMessageCloseButton = document.createElement('button');
     orderMessageCloseButton.classList.add('order-message__close-button');
@@ -75,12 +75,8 @@ export const renderProducts = (products, productList) => {
 // #
 // # ф-ия отображения добавленных товаров в карзине
 // #
-const renderCartItems = async () => {
+export const renderCartItems = (cartItemsList, cartItems, products) => {
     cartItemsList.textContent = '';  //очищаем этот контейнер
-    const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    const products = JSON.parse(
-        localStorage.getItem('cartProductDetails') || '[]',
-    );
 
     products.forEach(({ id, photoUrl, name, price }) => {
         const cartItem = cartItems.find((item) => item.id === id);
@@ -104,6 +100,4 @@ const renderCartItems = async () => {
         cartItemsList.append(listItem);
     });
 
-    const totalPrice = calculateTotalPrice(cartItems, products);
-    cartTotalPticeElement.innerHTML = `${totalPrice}&nbsp;₽`;
 };

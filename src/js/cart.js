@@ -1,3 +1,6 @@
+import { fetchCartItems, submitOrder } from "./api";
+import { renderCartItems, createOrderMessage } from "./dom";
+
 const cartButton = document.querySelector('.store__cart-button');
 const cartCount = cartButton.querySelector('.store__cart-cnt')
 const modalOverlay = document.querySelector('.modal-overlay');
@@ -23,7 +26,7 @@ const updateCartCount = () => {
     cartCount.textContent = cartItems.length;
 };
 
-const addToCart = (productId) => {
+export const addToCart = (productId) => {
     // будем получить данные из локального хранилища или пустой массив (если этих данных нет)
     const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
 
@@ -44,18 +47,21 @@ const addToCart = (productId) => {
 // #
 const updateCartItem = (productId, change) => {
     const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    const itemIndex = cartItems.findIndex(item => item.id === productId);
+    const itemIndex = cartItems.findIndex((item) => item.id === productId);
 
     if (itemIndex !== -1) {
         cartItems[itemIndex].count += change;
 
-        if (cartItems[itemIndex].xount <= 0) {
+        if (cartItems[itemIndex].count <= 0) {
             cartItems.splice(itemIndex, 1);
         }
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        const products = JSON.parse(
+            localStorage.getItem('cartProductDetails') || '[]'
+        );
 
         updateCartCount();
-        renderCartItems();
+        renderCartItems(cartItemsList, cartItems, products);
     }
 };
 
@@ -70,7 +76,6 @@ cartItemsList.addEventListener('click', ({ target }) => {
         updateCartItem(productId, -1);
     }
 });
-
 
 
 // #
@@ -95,8 +100,14 @@ cartButton.addEventListener('click', async () => {
     const products = await fetchCartItems(ids);
     localStorage.setItem('cartProductDetails', JSON.stringify(products));
     // далее будем отображать добавленные товары:
-    renderCartItems();
+    renderCartItems(cartItemsList, cartItems, products);
+
+    const totalPrice = calculateTotalPrice(cartItems, products);
+    cartTotalPticeElement.innerHTML = `${totalPrice}&nbsp;₽`;
+
 });
+
+
 modalOverlay.addEventListener('click', ({ target }) => {
     if (target === modalOverlay ||
         target.closest('.modal-overlay__close-button')

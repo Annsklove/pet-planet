@@ -1,4 +1,5 @@
 import { fetchProductsByCategory } from "./js/api";
+import { addToCart } from './js/cart';
 import { renderProducts } from './js/dom';
 
 const init = () => {
@@ -45,6 +46,3 @@ const init = () => {
 };
 
 init();
-
-//1.50
-//https://www.youtube.com/watch?v=4uzNpu7e9uc&t=1812s
